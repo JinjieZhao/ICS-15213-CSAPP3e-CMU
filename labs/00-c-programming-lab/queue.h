@@ -26,6 +26,8 @@ typedef struct ELE {
 /* Queue structure */
 typedef struct {
     list_ele_t *head;  /* Linked list of elements */
+    list_ele_t *tail;  /* Linked list of elements */
+    int len;
     /*
       You will need to add more fields to this structure
       to efficiently implement q_size and q_insert_tail
@@ -39,6 +41,8 @@ typedef struct {
   Return NULL if could not allocate space.
 */
 queue_t *q_new();
+
+list_ele_t *ele_new(char *s);
 
 /*
   Free ALL storage used by queue.
