@@ -179,7 +179,8 @@ int isTmax(int x)
  */
 int allOddBits(int x)
 {
-    return 2;
+    int mask = (0xAA << 24) +( 0xAA << 16) + (0xAA << 8) + 0xAA;
+    return !((mask & x) ^ mask);
 }
 /* 
  * negate - return -x 
@@ -190,7 +191,7 @@ int allOddBits(int x)
  */
 int negate(int x)
 {
-    return 2;
+    return (~x) + 1;
 }
 //3
 /* 
