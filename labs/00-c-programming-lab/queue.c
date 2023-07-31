@@ -11,8 +11,8 @@
  * It uses a singly-linked list to represent the set of queue elements
  */
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "harness.h"
@@ -20,22 +20,18 @@
 
 list_ele_t *ele_new(char *s)
 {
-    char *news = malloc(strlen(s)+1);
-    if (news == NULL){
-        return NULL;
-    }
-
     list_ele_t *newh;
     /* What should you do if the q is NULL? */
-    newh = malloc(sizeof(list_ele_t));
-    if (newh == NULL){
-        free(news);
+    newh = malloc(sizeof(list_ele_t) + strlen(s) + 1);
+    if (newh == NULL) {
         return NULL;
     }
 
+    char *news = (char *) (newh + 1);
+
     strcpy(news, s);
-    newh->value=news;
-    newh->next=NULL;
+    newh->value = news;
+    newh->next = NULL;
     return newh;
 }
 
@@ -45,7 +41,7 @@ list_ele_t *ele_new(char *s)
 */
 queue_t *q_new()
 {
-    queue_t *q =  malloc(sizeof(queue_t));
+    queue_t *q = malloc(sizeof(queue_t));
     /* What if malloc returned NULL? */
     if (q == NULL) {
         return NULL;
@@ -59,21 +55,20 @@ queue_t *q_new()
 /* Free all storage used by queue */
 void q_free(queue_t *q)
 {
-    if (q == NULL){
+    if (q == NULL) {
         return;
     }
     /* How about freeing the list elements and the strings? */
     /* Free queue structure */
-    list_ele_t* walker = q->head;
-    while (q->head){
-        walker =q->head;
-        q->head=walker->next;
-        free(walker->value);
+    list_ele_t *walker = q->head;
+    while (q->head) {
+        walker = q->head;
+        q->head = walker->next;
         free(walker);
     }
-    q->head=NULL;
-    q->tail=NULL;
-    q->len=0;
+    q->head = NULL;
+    q->tail = NULL;
+    q->len = 0;
     free(q);
 }
 
@@ -86,20 +81,20 @@ void q_free(queue_t *q)
  */
 bool q_insert_head(queue_t *q, char *s)
 {
-    if (q == NULL){
+    if (q == NULL) {
         return false;
     }
     list_ele_t *newh = ele_new(s);
     /* Don't forget to allocate space for the string and copy it */
     /* What if either call to malloc returns NULL? */
-    if (newh == NULL){
+    if (newh == NULL) {
         return false;
     }
     newh->next = q->head;
     q->head = newh;
     q->len++;
-    if(q->tail == NULL){
-        q->tail=newh;
+    if (q->tail == NULL) {
+        q->tail = newh;
     }
     return true;
 }
@@ -116,18 +111,18 @@ bool q_insert_tail(queue_t *q, char *s)
 {
     /* You need to write the complete code for this function */
     /* Remember: It should operate in O(1) time */
-    if (q == NULL){
+    if (q == NULL) {
         return false;
     }
-    if (q->len == 0){
-       return q_insert_head(q,s);
+    if (q->len == 0) {
+        return q_insert_head(q, s);
     }
 
     list_ele_t *newh = ele_new(s);
     if (newh == NULL) {
         return false;
     }
-    q->tail->next=newh;
+    q->tail->next = newh;
     q->tail = newh;
     q->len++;
 
@@ -144,21 +139,20 @@ bool q_insert_tail(queue_t *q, char *s)
 */
 bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
 {
-    if (q == NULL || q->len == 0){
+    if (q == NULL || q->len == 0) {
         return false;
     }
-    if (sp){
+    if (sp) {
         strncpy(sp, q->head->value, bufsize);
-        sp[bufsize-1]='\0';
+        sp[bufsize - 1] = '\0';
     }
     /* You need to fix up this code. */
-    list_ele_t* old_head = q->head;
+    list_ele_t *old_head = q->head;
     q->head = q->head->next;
     q->len--;
-    if (q->len == 0){
+    if (q->len == 0) {
         q->tail = NULL;
     }
-    free(old_head->value);
     free(old_head);
     return true;
 }
@@ -169,7 +163,7 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
  */
 int q_size(queue_t *q)
 {
-    if (q == NULL){
+    if (q == NULL) {
         return 0;
     }
     /* You need to write the code for this function */
@@ -187,18 +181,17 @@ int q_size(queue_t *q)
 void q_reverse(queue_t *q)
 {
     /* You need to write the code for this function */
-    if (q == NULL || q->len <=1){
+    if (q == NULL || q->len <= 1) {
         return;
     }
 
     list_ele_t *walker = q->head;
     list_ele_t *walker_next = q->head->next;
-    while (walker->next){
-        walker_next=walker->next;
-        walker->next=walker_next->next;
-        walker_next->next=q->head;
-        q->head=walker_next;
+    while (walker->next) {
+        walker_next = walker->next;
+        walker->next = walker_next->next;
+        walker_next->next = q->head;
+        q->head = walker_next;
     }
-    q->tail=walker;
+    q->tail = walker;
 }
-
